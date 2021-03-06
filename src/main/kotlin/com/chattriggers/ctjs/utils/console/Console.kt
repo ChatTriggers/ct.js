@@ -217,7 +217,7 @@ class Console(val loader: ILoader?) {
         this.frame.toFront()
         this.frame.repaint()
 
-        val chosenFont = if (Config.consolePrettyFont) FIRA_FONT.deriveFont(Config.consoleFontSize.toFloat()) else Font("DejaVu Sans Mono", Font.PLAIN, 15).deriveFont(Config.consoleFontSize.toFloat())
+        val chosenFont = Font("DejaVu Sans Mono", Font.PLAIN, 15).deriveFont(Config.consoleFontSize.toFloat())
 
         textArea.font = chosenFont
         // TODO: Ligatures make everything extremely slow for some reason. Is this fixable?
@@ -232,18 +232,5 @@ class Console(val loader: ILoader?) {
     protected fun finalize() {
         this.frame.defaultCloseOperation = WindowConstants.EXIT_ON_CLOSE
         this.frame.dispatchEvent(WindowEvent(frame, WindowEvent.WINDOW_CLOSING))
-    }
-
-    companion object {
-        val FIRA_FONT: Font
-
-        init {
-            FIRA_FONT = Font.createFont(
-                Font.TRUETYPE_FONT,
-                this::class.java.getResourceAsStream("/FiraCode-Regular.otf")
-            ).deriveFont(9f)
-
-            GraphicsEnvironment.getLocalGraphicsEnvironment().registerFont(FIRA_FONT)
-        }
     }
 }

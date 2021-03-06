@@ -27,7 +27,7 @@
 -keep class com.chattriggers.** { *; }
 -keep class org.spongepowered.** { *; }
 -keep class kotlin.** { *; }
--keep class me.falsehonesty.asmhelper.** { *; }
+-keep class dev.falsehonesty.asmhelper.** { *; }
 -keep class org.mozilla.** { *; }
 -keep class org.fife.** { *; }
 

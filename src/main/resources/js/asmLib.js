@@ -1,6 +1,6 @@
-const ASMAt = Java.type('me.falsehonesty.asmhelper.dsl.At');
-const ASMInjectionPoint = Java.type('me.falsehonesty.asmhelper.dsl.InjectionPoint');
-const ASMDescriptor = Java.type('me.falsehonesty.asmhelper.dsl.instructions.Descriptor');
+const ASMAt = Java.type('dev.falsehonesty.asmhelper.dsl.At');
+const ASMInjectionPoint = Java.type('dev.falsehonesty.asmhelper.dsl.InjectionPoint');
+const ASMDescriptor = Java.type('dev.falsehonesty.asmhelper.dsl.instructions.Descriptor');
 const asmInjectHelper = Java.type('com.chattriggers.ctjs.engine.langs.js.JSLoader').INSTANCE.asmInjectHelper;
 const asmRemoveHelper = Java.type('com.chattriggers.ctjs.engine.langs.js.JSLoader').INSTANCE.asmRemoveHelper;
 const asmFieldHelper = Java.type('com.chattriggers.ctjs.engine.langs.js.JSLoader').INSTANCE.asmFieldHelper;
@@ -197,9 +197,9 @@ export default class ASM {
 
     static currentModule = "";
 
-    static JumpCondition = Java.type('me.falsehonesty.asmhelper.dsl.instructions.JumpCondition');
+    static JumpCondition = Java.type('dev.falsehonesty.asmhelper.dsl.instructions.JumpCondition');
 
-    static AccessType = Java.type('me.falsehonesty.asmhelper.dsl.writers.AccessType');
+    static AccessType = Java.type('dev.falsehonesty.asmhelper.dsl.writers.AccessType');
 
     static ARRAY(o) {
         return `[${o}`;
