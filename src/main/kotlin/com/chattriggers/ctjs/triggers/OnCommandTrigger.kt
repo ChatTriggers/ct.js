@@ -55,10 +55,10 @@ class OnCommandTrigger(method: Any, loader: ILoader) : OnTrigger(method, Trigger
         for (command in CommandHandler.getCommandList()) {
             //#if MC<=10809
             if (command.commandName == this.commandName) {
-                //#else
-                //$$ if (command.name == this.commandName) {
-                //#endif
-                command.getTriggers().add(this)
+            //#else
+            //$$ if (command.name == this.commandName) {
+            //#endif
+                command.triggers.add(this)
                 return
             }
         }

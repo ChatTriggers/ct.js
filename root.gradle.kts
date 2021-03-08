@@ -11,8 +11,8 @@ plugins {
 configurations.register("compileClasspath")
 
 preprocess {
-//    "1.16.5-fabric"(11602, "yarn") {
-    "1.16.5"(11602, "srg") {
+//    "1.16.4-fabric"(11604, "yarn") {
+    "1.16.4"(11604, "srg") {
         "1.8.9"(10809, "srg", file("versions/1.12.2-1.8.9.txt"))
     }
 //    }

@@ -11,9 +11,6 @@ import com.chattriggers.ctjs.minecraft.objects.message.TextComponent
 import com.chattriggers.ctjs.print
 import com.chattriggers.ctjs.utils.config.Config
 import com.chattriggers.ctjs.utils.config.GuiConfig
-import net.minecraft.command.CommandBase
-import net.minecraft.command.CommandException
-import net.minecraft.command.ICommandSender
 import java.awt.Desktop
 import java.awt.Toolkit
 import java.awt.datatransfer.StringSelection
@@ -21,67 +18,95 @@ import java.io.File
 import java.io.IOException
 import java.util.*
 
+//#if MC==10809
+import net.minecraft.command.CommandBase
+import net.minecraft.command.CommandException
+import net.minecraft.command.ICommandSender
+//#else
+//$$ import com.mojang.brigadier.CommandDispatcher
+//$$ import com.mojang.brigadier.arguments.StringArgumentType
+//$$ import com.mojang.brigadier.builder.LiteralArgumentBuilder
+//$$ import com.mojang.brigadier.context.CommandContext
+//$$ import net.minecraft.command.CommandSource
+//$$ import net.minecraft.command.Commands
+//#endif
+
+//#if MC==10809
 object CTCommand : CommandBase() {
+//#else
+//$$ object CTCommand {
+//#endif
     private const val idFixed = 90123 // ID for dumped chat
     private var idFixedOffset = -1 // ID offset (increments)
 
-    //#if MC<=10809
+    private val commands = listOf(
+        subcommand("load", "reload") { Reference.loadCT() },
+        subcommand("unload") { Reference.unloadCT() },
+        subcommand("files", "file") { openFileLocation() },
+        subcommand("import") {
+            if (it.isEmpty()) {
+                ChatLib.chat("&c/ct import [module name]")
+            } else import(it[0])
+        },
+        subcommand("delete") {
+            when {
+                it.isEmpty() -> ChatLib.chat("&c/ct delete [module name]")
+                ModuleManager.deleteModule(it[0]) -> ChatLib.chat("&aDeleted")
+                else -> ChatLib.chat("&cFailed to delete ${it[0]}")
+            }
+        },
+        subcommand("modules") { GuiHandler.openGui(ModulesGui) },
+        subcommand("console") {
+            if (it.isEmpty()) {
+                ModuleManager.generalConsole.showConsole()
+            } else ModuleManager.getConsole(it[0]).showConsole()
+        },
+        subcommand("config", "settings", "setting") { GuiHandler.openGui(GuiConfig()) },
+        subcommand("sim", "simulate") { ChatLib.simulateChat(it.joinToString(" ")) },
+        subcommand("dump") { dump(it) },
+        subcommand("copy") { copyArgsToClipboard(it) },
+        subcommand("generatebindings") { Reference.generateBindings() }
+    )
+
+    //#if MC==10809
     override fun getCommandUsage(sender: ICommandSender?) = getUsage()
-    //#else
-    //$$ override fun getUsage(sender: ICommandSender) = getUsage()
-    //#endif
 
-    //#if MC<=10809
     override fun getCommandName() = "chattriggers"
-    //#else
-    //$$ override fun getName() = "chattriggers"
-    //#endif
 
-    //#if MC<=10809
     override fun getCommandAliases() = mutableListOf("ct")
-    //#else
-    //$$ override fun getAliases() = mutableListOf("ct")
-    //#endif
 
     override fun getRequiredPermissionLevel() = 0
 
     @Throws(CommandException::class)
-    //#if MC<=10809
-    override fun processCommand(sender: ICommandSender?, args: Array<String>) = run(args)
-    //#else
-    //$$ override fun execute(server: net.minecraft.server.MinecraftServer?, sender: ICommandSender, args: Array<String>) = run(args)
-    //#endif
-
-    private fun run(args: Array<String>) {
+    override fun processCommand(sender: ICommandSender?, args: Array<String>) {
         if (args.isEmpty()) {
             ChatLib.chat(getUsage())
             return
         }
 
-        when (args[0].toLowerCase()) {
-            "reload", "load" -> Reference.loadCT()
-            "unload" -> Reference.unloadCT()
-            "files", "file" -> openFileLocation()
-            "import" ->
-                if (args.size == 1) ChatLib.chat("&c/ct import [module name]")
-                else import(args[1])
-            "delete" ->
-                if (args.size == 1) ChatLib.chat("&c/ct delete [module name]")
-                else ChatLib.chat((if (ModuleManager.deleteModule(args[1])) "&aDeleted " else "&cFailed to delete ") + args[1])
-            "modules" -> GuiHandler.openGui(ModulesGui)
-            "console" ->
-                if (args.size == 1) ModuleManager.generalConsole.showConsole()
-                else ModuleManager.getConsole(args[1]).showConsole()
-            "config", "settings", "setting" ->
-                GuiHandler.openGui(GuiConfig())
-            "sim", "simulate" ->
-                ChatLib.simulateChat(args.copyOfRange(1, args.size).joinToString(" "))
-            "dump" -> dump(args)
-            "copy" -> copyArgsToClipboard(args)
-            "generatebindings" -> Reference.generateBindings()
-            else -> ChatLib.chat(getUsage())
-        }
+        commands.firstOrNull { args[0] in it.first }?.second?.invoke(args.drop(1))
+            ?: ChatLib.chat(getUsage())
     }
+    //#else
+    //$$ fun register(dispatcher: CommandDispatcher<CommandSource?>) {
+    //$$     var command = Commands.literal("ct")
+    //$$
+    //$$     for ((aliases, action) in commands) {
+    //$$         for (alias in aliases) {
+    //$$             command = command.then(Commands.literal(alias).executes { ctx ->
+    //$$                 action(ctx.nodes.map {
+    //$$                     ctx.input.substring(it.range.start, it.range.end)
+    //$$                 })
+    //$$                 1
+    //$$             })
+    //$$         }
+    //$$     }
+    //$$
+    //$$     dispatcher.register(command)
+    //$$ }
+    //#endif
+
+    private fun subcommand(vararg aliases: String, executor: (List<String>) -> Unit) = Pair(aliases.toList(), executor)
 
     private fun import(moduleName: String) {
         if (ModuleManager.cachedModules.any { it.name.equals(moduleName, ignoreCase = true) }) {
@@ -126,7 +151,7 @@ object CTCommand : CommandBase() {
         }
     }
 
-    private fun dump(args: Array<String>) {
+    private fun dump(args: List<String>) {
         if (args.size == 1) {
             dumpChat()
             return
@@ -144,7 +169,9 @@ object CTCommand : CommandBase() {
     }
 
     private fun dumpChat(lines: Int = 100) = dumpList(ChatListener.chatHistory, lines)
+
     private fun dumpActionBar(lines: Int = 100) = dumpList(ChatListener.actionBarHistory, lines)
+
     private fun dumpList(messages: List<String>, lines: Int) {
         clearOldDump()
 
@@ -173,9 +200,8 @@ object CTCommand : CommandBase() {
         this.idFixedOffset = -1
     }
 
-    private fun copyArgsToClipboard(args: Array<String>) {
+    private fun copyArgsToClipboard(args: List<String>) {
         clearOldDump()
-        val toCopy = args.copyOfRange(1, args.size).joinToString(" ")
-        Toolkit.getDefaultToolkit().systemClipboard.setContents(StringSelection(toCopy), null)
+        Toolkit.getDefaultToolkit().systemClipboard.setContents(StringSelection(args.joinToString(" ")), null)
     }
 }

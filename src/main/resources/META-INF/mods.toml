@@ -1,0 +1,28 @@
+# Make sure this is set to "kotlinforforge"
+modLoader="javafml"
+# Make sure this is set to the appropriate version range
+loaderVersion="[1.16,)" # Require at least 1.9.x
+# License is REQUIRED after 1.16
+license='MIT'
+
+[[mods]]
+modId="ctjs"
+version="${file.jarVersion}"
+displayName="ct.js"
+credits=""
+authors="FalseHonesty, Ecolsson, kerbybit"
+description='''
+ctjs is a framework that allows for live scripting and client modification using JavaScript.
+'''
+[[dependencies.ctjs]]
+modId="forge"
+mandatory=true
+versionRange="[36,)"
+ordering="NONE"
+side="BOTH"
+[[dependencies.ctjs]]
+modId="minecraft"
+mandatory=true
+versionRange="[1.16.5]"
+ordering="NONE"
+side="BOTH"

@@ -18,30 +18,53 @@ import com.google.gson.JsonParser
 import net.minecraftforge.client.ClientCommandHandler
 import net.minecraftforge.common.MinecraftForge
 import net.minecraftforge.fml.common.Mod
-import net.minecraftforge.fml.common.event.FMLInitializationEvent
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent
 import org.apache.commons.codec.digest.DigestUtils
 import java.io.File
 import java.io.FileReader
 import kotlin.concurrent.thread
 
+//#if MC==18090
+import net.minecraftforge.fml.common.event.FMLInitializationEvent
+import net.minecraftforge.fml.common.event.FMLPreInitializationEvent
+//#else
+//$$ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent
+//$$ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext
+//$$ import net.minecraftforge.eventbus.api.SubscribeEvent
+//#endif
+
 @Mod(
+    //#if MC==10809
     modid = Reference.MODID,
     name = Reference.MODNAME,
     version = Reference.MODVERSION,
-    clientSideOnly = true,
-    modLanguage = "Kotlin",
-    modLanguageAdapter = "com.chattriggers.ctjs.utils.kotlin.KotlinAdapter"
+    clientSideOnly = true
+    //#else
+    //$$ Reference.MODID
+    //#endif
 )
-object CTJS {
-    val configLocation = File("./config")
-    val assetsDir = File(configLocation, "ChatTriggers/images/").apply { mkdirs() }
-    val sounds = mutableListOf<Sound>()
+class CTJSMod {
+    //#if MC==11605
+    //$$ init {
+    //$$     FMLJavaModLoadingContext.get().modEventBus.addListener { e: FMLCommonSetupEvent ->
+    //$$         preInit()
+    //$$         init()
+    //$$     }
+    //$$ }
+    //$$
+    //$$ @SubscribeEvent
+    //$$ fun registerCommands(event: RegisterCommandsEvent) {
+    //$$     CTCommand.register(event.dispatcher)
+    //$$ }
+    //#endif
 
+    //#if MC==10809
     @Mod.EventHandler
     fun preInit(event: FMLPreInitializationEvent) {
+    //#else
+    //$$ fun preInit() {
+    //#endif
         thread(start = true) {
-            loadConfig()
+            CTJS.loadConfig()
         }
 
         listOf(ChatListener, WorldListener, CPS, GuiHandler, ClientListener, UpdateChecker).forEach {
@@ -60,14 +83,30 @@ object CTJS {
         }
     }
 
+    //#if MC==10809
     @Mod.EventHandler
     fun init(event: FMLInitializationEvent) {
+    //#else
+    //$$ fun init() {
+    //#endif
         Reference.conditionalThread {
             ModuleManager.entryPass()
         }
 
-        registerHooks()
+        //#if MC==10809
+        ClientCommandHandler.instance.registerCommand(CTCommand)
+        //#endif
+
+        Runtime.getRuntime().addShutdownHook(
+            Thread { TriggerType.GAME_UNLOAD::triggerAll }
+        )
     }
+}
+
+object CTJS {
+    val configLocation = File("./config")
+    val assetsDir = File(configLocation, "ChatTriggers/images/").apply { mkdirs() }
+    val sounds = mutableListOf<Sound>()
 
     fun saveConfig() = Config.save(File(this.configLocation, "ChatTriggers.json"))
 
@@ -91,13 +130,5 @@ object CTJS {
         }
 
         return false
-    }
-
-    private fun registerHooks() {
-        ClientCommandHandler.instance.registerCommand(CTCommand)
-
-        Runtime.getRuntime().addShutdownHook(
-            Thread { TriggerType.GAME_UNLOAD::triggerAll }
-        )
     }
 }
