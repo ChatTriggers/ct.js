@@ -62,7 +62,7 @@ class PlayerMP(val player: EntityPlayer) : Entity(player) {
     }
 
     fun setTabDisplayName(textComponent: TextComponent) {
-        getPlayerInfo()?.displayName = textComponent.chatComponentText
+        getPlayerInfo()?.displayName = textComponent.component
     }
 
     /**
@@ -72,7 +72,7 @@ class PlayerMP(val player: EntityPlayer) : Entity(player) {
      * @param textComponent the new name to display
      */
     fun setNametagName(textComponent: TextComponent) {
-        displayNameField.set(player, textComponent.chatComponentText.formattedText)
+        displayNameField.set(player, textComponent.component.formattedText)
     }
 
     /**

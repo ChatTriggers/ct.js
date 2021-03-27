@@ -9,6 +9,7 @@ import com.chattriggers.ctjs.minecraft.objects.message.TextComponent
 import com.chattriggers.ctjs.minecraft.wrappers.World
 import com.chattriggers.ctjs.print
 import com.chattriggers.ctjs.utils.config.Config
+import com.chattriggers.ctjs.utils.kotlin.MCClickEventAction
 import com.chattriggers.ctjs.utils.kotlin.fromJson
 import com.chattriggers.ctjs.utils.kotlin.toVersion
 import com.google.gson.Gson
@@ -65,9 +66,9 @@ object UpdateChecker {
             "\n",
             "&cChatTriggers requires an update to work properly!",
             "\n",
-            TextComponent("&a[Download]").setClick("open_url", "https://www.chattriggers.com/#download"),
+            TextComponent("&a[Download]").setClick(MCClickEventAction.OPEN_URL, "https://www.chattriggers.com/#download"),
             " ",
-            TextComponent("&e[Changelog]").setClick("open_url", "https://github.com/ChatTriggers/ct.js/releases"),
+            TextComponent("&e[Changelog]").setClick(MCClickEventAction.OPEN_URL, "https://github.com/ChatTriggers/ct.js/releases"),
             "\n",
             "&c&m" + ChatLib.getChatBreak("-")
         ).chat()

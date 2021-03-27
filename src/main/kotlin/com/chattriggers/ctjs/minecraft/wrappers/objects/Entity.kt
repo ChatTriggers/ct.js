@@ -4,7 +4,7 @@ import com.chattriggers.ctjs.minecraft.libs.Tessellator
 import com.chattriggers.ctjs.minecraft.wrappers.objects.block.BlockFace
 import com.chattriggers.ctjs.utils.kotlin.External
 import com.chattriggers.ctjs.utils.kotlin.MCEntity
-import com.chattriggers.ctjs.utils.kotlin.MathHelper
+import com.chattriggers.ctjs.utils.kotlin.MCMathHelper
 import net.minecraft.entity.EntityLivingBase
 import java.util.*
 
@@ -32,9 +32,9 @@ open class Entity(val entity: MCEntity) {
      */
     fun getPitch(): Double {
         //#if MC==10809
-        return MathHelper.wrapAngleTo180_float(entity.rotationPitch).toDouble()
+        return MCMathHelper.wrapAngleTo180_float(entity.rotationPitch).toDouble()
         //#else
-        //$$ return MathHelper.wrapDegrees(entity.rotationPitch).toDouble()
+        //$$ return MCMathHelper.wrapDegrees(entity.rotationPitch).toDouble()
         //#endif
     }
 
@@ -46,9 +46,9 @@ open class Entity(val entity: MCEntity) {
      */
     fun getYaw(): Double {
         //#if MC<=10809
-        return MathHelper.wrapAngleTo180_float(entity.rotationYaw).toDouble()
+        return MCMathHelper.wrapAngleTo180_float(entity.rotationYaw).toDouble()
         //#else
-        //$$ return MathHelper.wrapDegrees(entity.rotationYaw).toDouble()
+        //$$ return MCMathHelper.wrapDegrees(entity.rotationYaw).toDouble()
         //#endif
     }
 

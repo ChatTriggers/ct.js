@@ -1,12 +1,12 @@
 package com.chattriggers.ctjs.minecraft.libs
 
 import com.chattriggers.ctjs.minecraft.listeners.CancellableEvent
+import com.chattriggers.ctjs.minecraft.objects.message.TextComponent
 import com.chattriggers.ctjs.utils.kotlin.External
-import com.chattriggers.ctjs.utils.kotlin.ITextComponent
+import com.chattriggers.ctjs.utils.kotlin.MCITextComponent
 import net.minecraftforge.client.event.ClientChatReceivedEvent
 import net.minecraftforge.client.event.MouseEvent
 import net.minecraftforge.client.event.sound.PlaySoundEvent
-import net.minecraftforge.fml.client.event.ConfigChangedEvent
 
 //TODO: figure out what is not needed anymore after the kotlin conversion and remove
 @External
@@ -30,20 +30,9 @@ object EventLib {
     }
 
     @JvmStatic
-    fun getMessage(event: ClientChatReceivedEvent): ITextComponent {
-        return event.message
+    fun getMessage(event: ClientChatReceivedEvent): TextComponent {
+        return TextComponent(event.message)
     }
-
-    @JvmStatic
-    fun getName(event: PlaySoundEvent): String {
-        return event.name
-    }
-
-    @JvmStatic
-    fun getModId(event: ConfigChangedEvent.OnConfigChangedEvent): String {
-        return event.modID
-    }
-
     /**
      * Cancel an event. Automatically used with `cancel(event)`.
      *
@@ -54,12 +43,7 @@ object EventLib {
     @Throws(IllegalArgumentException::class)
     fun cancel(event: Any) {
         when (event) {
-            is PlaySoundEvent ->
-                //#if MC<=10809
-                event.result = null
-            //#else
-            //$$ event.resultSound =null
-            //#endif
+            is PlaySoundEvent -> event.result = null
             is CancellableEvent -> event.setCanceled(true)
             else -> throw IllegalArgumentException()
         }

@@ -10,8 +10,8 @@ import com.chattriggers.ctjs.minecraft.wrappers.objects.block.Sign
 import com.chattriggers.ctjs.minecraft.wrappers.objects.inventory.Inventory
 import com.chattriggers.ctjs.minecraft.wrappers.objects.inventory.Item
 import com.chattriggers.ctjs.utils.kotlin.External
-import com.chattriggers.ctjs.utils.kotlin.MathHelper
-import com.chattriggers.ctjs.utils.kotlin.RayTraceType
+import com.chattriggers.ctjs.utils.kotlin.MCMathHelper
+import com.chattriggers.ctjs.utils.kotlin.MCRayTraceType
 import net.minecraft.block.BlockSign
 import net.minecraft.client.entity.EntityPlayerSP
 import net.minecraft.client.network.NetworkPlayerInfo
@@ -76,7 +76,7 @@ object Player {
      * @return the player's camera pitch
      */
     @JvmStatic
-    fun getPitch(): Float = MathHelper.
+    fun getPitch(): Float = MCMathHelper.
         //#if MC<=10809
         wrapAngleTo180_float(getPlayer()?.rotationPitch ?: 0f)
     //#else
@@ -89,7 +89,7 @@ object Player {
      * @return the player's camera yaw
      */
     @JvmStatic
-    fun getYaw(): Float = MathHelper.
+    fun getYaw(): Float = MCMathHelper.
         //#if MC<=10809
         wrapAngleTo180_float(getPlayer()?.rotationYaw ?: 0f)
     //#else
@@ -232,14 +232,14 @@ object Player {
         val world = World.getWorld() ?: return Block(0)
 
         return when (mop.typeOfHit) {
-            RayTraceType.BLOCK -> {
+            MCRayTraceType.BLOCK -> {
                 val block = Block(world.getBlockState(mop.blockPos).block)
                     .setBlockPos(mop.blockPos)
                     .setFace(BlockFace(mop.sideHit))
 
                 if (block.block is BlockSign) Sign(block) else block
             }
-            RayTraceType.ENTITY -> Entity(mop.entityHit)
+            MCRayTraceType.ENTITY -> Entity(mop.entityHit)
             else -> Block(0)
         }
     }
@@ -278,7 +278,7 @@ object Player {
      */
     @JvmStatic
     fun setTabDisplayName(textComponent: TextComponent) {
-        getPlayerInfo().displayName = textComponent.chatComponentText
+        getPlayerInfo().displayName = textComponent.component
     }
 
     @JvmStatic

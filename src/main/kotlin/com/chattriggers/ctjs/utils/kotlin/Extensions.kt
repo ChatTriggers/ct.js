@@ -5,28 +5,28 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import net.minecraft.client.renderer.Tessellator
 
-fun ITextComponent.getStyling(): TextStyle =
+fun MCITextComponent.getStyling(): MCTextStyle =
     //#if MC<=10809
     this.chatStyle
 
 //#else
 //$$ this.style
 //#endif
-fun TextStyle.getClick(): TextClickEvent? =
+fun MCTextStyle.getClick(): MCClickEvent? =
     //#if MC<=10809
     chatClickEvent
 //#else
 //$$ clickEvent
 //#endif
 
-fun TextStyle.getHover(): TextHoverEvent? =
+fun MCTextStyle.getHover(): MCHoverEvent? =
     //#if MC<=10809
     chatHoverEvent
 //#else
 //$$ hoverEvent
 //#endif
 
-fun Tessellator.getRenderer(): WorldRenderer =
+fun Tessellator.getRenderer(): MCWorldRenderer =
     //#if MC<=10809
     worldRenderer
 //#else

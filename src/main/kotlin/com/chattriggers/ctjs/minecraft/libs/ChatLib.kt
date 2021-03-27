@@ -10,13 +10,15 @@ import com.chattriggers.ctjs.print
 import com.chattriggers.ctjs.utils.kotlin.External
 import com.chattriggers.ctjs.utils.kotlin.times
 import net.minecraft.client.gui.ChatLine
-import net.minecraft.client.gui.GuiNewChat
 import net.minecraftforge.client.ClientCommandHandler
 import net.minecraftforge.client.event.ClientChatReceivedEvent
 import org.mozilla.javascript.NativeObject
 import java.util.regex.Pattern
-import kotlin.concurrent.thread
 import kotlin.math.roundToInt
+
+//#if MC==11604
+//$$ import com.chattriggers.ctjs.launch.plugin.INewChatGuiAccessor
+//#endif
 
 @External
 object ChatLib {
@@ -276,33 +278,66 @@ object ChatLib {
      * that already implement different versions of this method and those should be used in place of this one
      * if there is already a suitable replacement. Otherwise, create one and use this method.
      *
-     * @param toReplace the "comparator" function
+     * @param shouldReplace the "comparator" function
      * @param replacements the replacement messages
      */
     @JvmStatic
-    private fun editChat(toReplace: (Message) -> Boolean, vararg replacements: Message) {
-        val drawnChatLines = Client.getChatGUI()!!.drawnChatLines
+    private fun editChat(shouldReplace: (Message) -> Boolean, vararg replacements: Message) {
+        //#if MC==10809
         val chatLines = Client.getChatGUI()!!.chatLines
+        val drawnChatLines = Client.getChatGUI()!!.drawnChatLines
 
-        editChatLineList(chatLines, toReplace, *replacements)
-        editChatLineList(drawnChatLines, toReplace, *replacements)
+        editChatLineList(chatLines, shouldReplace, *replacements)
+        editChatLineList(drawnChatLines, shouldReplace, *replacements)
+        //#else
+        //$$ val chatLines = (Client.getChatGUI()!! as INewChatGuiAccessor).getChatLines()
+        //$$ val drawnChatLines = (Client.getChatGUI()!! as INewChatGuiAccessor).getDrawnChatLines()
+        //$$
+        //$$ editChatLineList(
+        //$$     chatLines,
+        //$$     shouldReplace,
+        //$$     *replacements,
+        //$$     tToMessage = ::Message,
+        //$$     messageToT = Message::getChatMessage
+        //$$ )
+        //$$ editChatLineList(
+        //$$     drawnChatLines,
+        //$$     shouldReplace,
+        //$$     *replacements,
+        //$$     tToMessage = ::Message,
+        //$$     messageToT = Message::getReorderingProcessor
+        //$$ )
+        //#endif
     }
 
+
+    //#if MC==10809
     private fun editChatLineList(
         lineList: MutableList<ChatLine>,
-        toReplace: (Message) -> Boolean,
+        shouldReplace: (Message) -> Boolean,
         vararg replacements: Message
     ) {
+    //#else
+    //$$ private fun <T> editChatLineList(
+    //$$     lineList: MutableList<ChatLine<T>>,
+    //$$     shouldReplace: (Message) -> Boolean,
+    //$$     vararg replacements: Message,
+    //$$     tToMessage: (T) -> Message,
+    //$$     messageToT: (Message) -> T
+    //$$ ) {
+    //#endif
         val chatLineIterator = lineList.listIterator()
 
         while (chatLineIterator.hasNext()) {
             val chatLine = chatLineIterator.next()
 
-            val result = toReplace(
-                Message(chatLine.chatComponent).setChatLineId(chatLine.chatLineID)
-            )
+            //#if MC==10809
+            val message = Message(chatLine.chatComponent).setChatLineId(chatLine.chatLineID)
+            //#else
+            //$$ val message = tToMessage(chatLine.lineString).setChatLineId(chatLine.chatLineID)
+            //#endif
 
-            if (!result) {
+            if (!shouldReplace(message)) {
                 continue
             }
 
@@ -311,7 +346,11 @@ object ChatLib {
             replacements.map {
                 val lineId = if (it.getChatLineId() == -1) 0 else it.getChatLineId()
 
+                //#if MC==10809
                 ChatLine(chatLine.updatedCounter, it.getChatMessage(), lineId)
+                //#else
+                //$$ ChatLine(chatLine.updatedCounter, messageToT(it), lineId)
+                //#endif
             }.forEach {
                 chatLineIterator.add(it)
             }

@@ -110,8 +110,6 @@ if (FABRIC) {
 } else {
     minecraft {
         if (FG3) {
-            accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
-
             runs {
                 client {
                     workingDirectory rootProject.file('run')
@@ -166,7 +164,7 @@ dependencies {
     provided "com.fasterxml.jackson.core:jackson-core:2.9.3"
     provided "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
     provided "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
-    provided "dev.falsehonesty.asmhelper:AsmHelper:1.1-$mcVersion"
+    provided "dev.falsehonesty.asmhelper:AsmHelper:1.2-$mcVersion"
     provided 'com.chattriggers:rhino:1.8.1'
     provided 'com.fifesoft:rsyntaxtextarea:3.0.8'
     provided 'com.github.falsehonesty:ts-generator:adfb57a8f6'

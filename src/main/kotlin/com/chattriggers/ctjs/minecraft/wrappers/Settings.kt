@@ -1,7 +1,7 @@
 package com.chattriggers.ctjs.minecraft.wrappers
 
 import com.chattriggers.ctjs.utils.kotlin.External
-import com.chattriggers.ctjs.utils.kotlin.SoundCategory
+import com.chattriggers.ctjs.utils.kotlin.MCSoundCategory
 import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.entity.player.EnumPlayerModelParts
 import net.minecraft.world.EnumDifficulty
@@ -92,66 +92,66 @@ object Settings {
 
     object sound {
         @JvmStatic
-        fun getMasterVolume() = getSettings().getSoundLevel(SoundCategory.MASTER)
+        fun getMasterVolume() = getSettings().getSoundLevel(MCSoundCategory.MASTER)
 
         @JvmStatic
-        fun setMasterVolume(level: Float) = getSettings().setSoundLevel(SoundCategory.MASTER, level)
+        fun setMasterVolume(level: Float) = getSettings().setSoundLevel(MCSoundCategory.MASTER, level)
 
         @JvmStatic
-        fun getMusicVolume() = getSettings().getSoundLevel(SoundCategory.MUSIC)
+        fun getMusicVolume() = getSettings().getSoundLevel(MCSoundCategory.MUSIC)
 
         @JvmStatic
-        fun setMusicVolume(level: Float) = getSettings().setSoundLevel(SoundCategory.MUSIC, level)
+        fun setMusicVolume(level: Float) = getSettings().setSoundLevel(MCSoundCategory.MUSIC, level)
 
         @JvmStatic
-        fun getNoteblockVolume() = getSettings().getSoundLevel(SoundCategory.RECORDS)
+        fun getNoteblockVolume() = getSettings().getSoundLevel(MCSoundCategory.RECORDS)
 
         @JvmStatic
-        fun setNoteblockVolume(level: Float) = getSettings().setSoundLevel(SoundCategory.RECORDS, level)
+        fun setNoteblockVolume(level: Float) = getSettings().setSoundLevel(MCSoundCategory.RECORDS, level)
 
         @JvmStatic
-        fun getWeather() = getSettings().getSoundLevel(SoundCategory.WEATHER)
+        fun getWeather() = getSettings().getSoundLevel(MCSoundCategory.WEATHER)
 
         @JvmStatic
-        fun setWeather(level: Float) = getSettings().setSoundLevel(SoundCategory.WEATHER, level)
+        fun setWeather(level: Float) = getSettings().setSoundLevel(MCSoundCategory.WEATHER, level)
 
         @JvmStatic
-        fun getBlocks() = getSettings().getSoundLevel(SoundCategory.BLOCKS)
+        fun getBlocks() = getSettings().getSoundLevel(MCSoundCategory.BLOCKS)
 
         @JvmStatic
-        fun setBlocks(level: Float) = getSettings().setSoundLevel(SoundCategory.BLOCKS, level)
+        fun setBlocks(level: Float) = getSettings().setSoundLevel(MCSoundCategory.BLOCKS, level)
 
         //#if MC<=10809
         @JvmStatic
-        fun getHostileCreatures() = getSettings().getSoundLevel(SoundCategory.MOBS)
+        fun getHostileCreatures() = getSettings().getSoundLevel(MCSoundCategory.MOBS)
 
         @JvmStatic
-        fun setHostileCreatures(level: Float) = getSettings().setSoundLevel(SoundCategory.MOBS, level)
+        fun setHostileCreatures(level: Float) = getSettings().setSoundLevel(MCSoundCategory.MOBS, level)
 
         @JvmStatic
-        fun getFriendlyCreatures() = getSettings().getSoundLevel(SoundCategory.ANIMALS)
+        fun getFriendlyCreatures() = getSettings().getSoundLevel(MCSoundCategory.ANIMALS)
 
         @JvmStatic
-        fun setFriendlyCreatures(level: Float) = getSettings().setSoundLevel(SoundCategory.ANIMALS, level)
+        fun setFriendlyCreatures(level: Float) = getSettings().setSoundLevel(MCSoundCategory.ANIMALS, level)
         //#else
-        //$$ @JvmStatic fun getHostileCreatures() = getSettings().getSoundLevel(SoundCategory.HOSTILE)
-        //$$ @JvmStatic fun setHostileCreatures(level: Float) = getSettings().setSoundLevel(SoundCategory.HOSTILE, level)
+        //$$ @JvmStatic fun getHostileCreatures() = getSettings().getSoundLevel(MCSoundCategory.HOSTILE)
+        //$$ @JvmStatic fun setHostileCreatures(level: Float) = getSettings().setSoundLevel(MCSoundCategory.HOSTILE, level)
         //$$
-        //$$ @JvmStatic fun getFriendlyCreatures() = getSettings().getSoundLevel(SoundCategory.NEUTRAL)
-        //$$ @JvmStatic fun setFriendlyCreatures(level: Float) = getSettings().setSoundLevel(SoundCategory.NEUTRAL, level)
+        //$$ @JvmStatic fun getFriendlyCreatures() = getSettings().getSoundLevel(MCSoundCategory.NEUTRAL)
+        //$$ @JvmStatic fun setFriendlyCreatures(level: Float) = getSettings().setSoundLevel(MCSoundCategory.NEUTRAL, level)
         //#endif
 
         @JvmStatic
-        fun getPlayers() = getSettings().getSoundLevel(SoundCategory.PLAYERS)
+        fun getPlayers() = getSettings().getSoundLevel(MCSoundCategory.PLAYERS)
 
         @JvmStatic
-        fun setPlayers(level: Float) = getSettings().setSoundLevel(SoundCategory.PLAYERS, level)
+        fun setPlayers(level: Float) = getSettings().setSoundLevel(MCSoundCategory.PLAYERS, level)
 
         @JvmStatic
-        fun getAmbient() = getSettings().getSoundLevel(SoundCategory.AMBIENT)
+        fun getAmbient() = getSettings().getSoundLevel(MCSoundCategory.AMBIENT)
 
         @JvmStatic
-        fun setAmbient(level: Float) = getSettings().setSoundLevel(SoundCategory.AMBIENT, level)
+        fun setAmbient(level: Float) = getSettings().setSoundLevel(MCSoundCategory.AMBIENT, level)
     }
 
     object video {

@@ -5,7 +5,7 @@ import com.chattriggers.ctjs.minecraft.wrappers.Client
 import com.chattriggers.ctjs.minecraft.wrappers.Player
 import com.chattriggers.ctjs.minecraft.wrappers.World
 import com.chattriggers.ctjs.utils.kotlin.External
-import com.chattriggers.ctjs.utils.kotlin.SoundCategory
+import com.chattriggers.ctjs.utils.kotlin.MCSoundCategory
 import net.minecraft.client.audio.SoundManager
 import net.minecraftforge.fml.relauncher.ReflectionHelper
 import org.mozilla.javascript.NativeObject
@@ -151,7 +151,7 @@ class Sound(private val config: NativeObject) {
      * @param category the category
      */
     fun setCategory(category: String) = apply {
-        val category1 = SoundCategory.getCategory(category.toLowerCase())
+        val category1 = MCSoundCategory.getCategory(category.toLowerCase())
         setVolume(Client.getMinecraft().gameSettings.getSoundLevel(category1))
     }
 

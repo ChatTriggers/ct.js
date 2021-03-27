@@ -5,7 +5,7 @@ import com.chattriggers.ctjs.minecraft.wrappers.objects.Entity
 import com.chattriggers.ctjs.minecraft.wrappers.objects.Particle
 import com.chattriggers.ctjs.minecraft.wrappers.objects.PlayerMP
 import com.chattriggers.ctjs.minecraft.wrappers.objects.block.Block
-import com.chattriggers.ctjs.utils.kotlin.BlockPos
+import com.chattriggers.ctjs.utils.kotlin.MCBlockPos
 import com.chattriggers.ctjs.utils.kotlin.External
 import com.chattriggers.ctjs.utils.kotlin.MCParticle
 import net.minecraft.client.multiplayer.WorldClient
@@ -69,10 +69,10 @@ object World {
     @JvmStatic
     fun playRecord(name: String, x: Double, y: Double, z: Double) {
         //#if MC<=10809
-        getWorld()?.playRecord(BlockPos(x, y, z), name)
+        getWorld()?.playRecord(MCBlockPos(x, y, z), name)
         //#else
         //$$ val sound = SoundEvent.REGISTRY.getObject(ResourceLocation("minecraft", name))
-        //$$ getWorld()?.playRecord(BlockPos(x, y, z), sound)
+        //$$ getWorld()?.playRecord(MCBlockPos(x, y, z), sound)
         //#endif
     }
 
@@ -113,7 +113,7 @@ object World {
      */
     @JvmStatic
     fun getBlockAt(x: Int, y: Int, z: Int): Block {
-        val blockPos = BlockPos(x, y, z)
+        val blockPos = MCBlockPos(x, y, z)
         val blockState = getWorld()!!.getBlockState(blockPos)
 
         return Block(blockState.block).setBlockPos(blockPos)
@@ -147,7 +147,7 @@ object World {
     fun getChunk(x: Int, y: Int, z: Int): Chunk {
         return Chunk(
             getWorld()!!.getChunkFromBlockCoords(
-                BlockPos(x, y, z)
+                MCBlockPos(x, y, z)
             )
         )
     }

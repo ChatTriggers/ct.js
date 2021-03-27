@@ -3,230 +3,311 @@ package com.chattriggers.ctjs.minecraft.objects.message
 import com.chattriggers.ctjs.minecraft.libs.ChatLib
 import com.chattriggers.ctjs.utils.kotlin.*
 
-@External
-class TextComponent {
+//#if MC==10809
+import net.minecraft.event.ClickEvent
+import net.minecraft.event.HoverEvent
+import net.minecraft.util.EnumChatFormatting
+import net.minecraft.util.IChatComponent
+import net.minecraft.util.ChatStyle
+import java.util.*
 
-    lateinit var chatComponentText: ITextComponent
+//#else
+//$$ import net.minecraft.util.text.*
+//$$ import net.minecraft.util.text.event.*
+//$$ import net.minecraft.util.IReorderingProcessor
+//$$ import net.minecraft.util.text.ITextProperties.IStyledTextAcceptor
+//$$ import net.minecraft.util.text.ITextProperties.ITextAcceptor
+//$$ import java.util.Optional
+//$$ import java.util.stream.Stream
+//$$ import java.util.function.Consumer
+//#endif
 
-    private var text: String
-    private var formatted = true
+@Suppress("MemberVisibilityCanBePrivate")
+class TextComponent : MCITextComponent {
+    lateinit var component: MCITextComponent
+        private set
+    var text: String
+        set(value) {
+            field = value
+            reInstance()
+        }
+    var formatted = true
+        set(value) {
+            field = value
+            reInstance()
+        }
 
-    private var clickAction: String? = null
-    private var clickValue: String? = null
-    private var hoverAction: String? = "show_text"
-    private var hoverValue: String? = null
+    var clickAction: MCClickEventAction? = null
+        set(value) {
+            field = value
+            reInstance()
+        }
+    var clickValue: String? = null
+        set(value) {
+            field = value
+            reInstance()
+        }
+    var hoverAction: MCHoverEventAction? = null
+        set(value) {
+            field = value
+            reInstance()
+        }
+    var hoverValue: Any? = null
+        set(value) {
+            field = value
+            reInstance()
+        }
 
-    /**
-     * Creates a TextComponent from a string.
-     * @param text the text string in the component.
-     */
     constructor(text: String) {
         this.text = text
         reInstance()
     }
 
-    /**
-     * Creates a TextComponent from an existing ITextComponent.
-     * @param chatComponent the ITextComponent to convert
-     */
-    constructor(chatComponent: ITextComponent) {
-        this.chatComponentText = chatComponent
-        this.text = this.chatComponentText.formattedText
+    constructor(component: MCITextComponent) {
+        this.component = component
 
-        val chatStyle = chatComponent.getStyling()
+        //#if MC==11604
+        //$$ val builder = FormattedTextBuilder()
+        //$$ component.getComponentWithStyle(builder, Style.EMPTY)
+        //$$ text = builder.getString()
+        //#else
+        text = component.formattedText
+        //#endif
 
-        val clickEvent = chatStyle.getClick()
-        this.clickAction = clickEvent?.action?.canonicalName
-        this.clickValue = clickEvent?.value
+        //#if MC==11604
+        //$$ val clickEvent = component.style.clickEvent
+        //#else
+        val clickEvent = component.chatStyle.chatClickEvent
+        //#endif
 
-        val hoverEvent = chatStyle.getHover()
-        this.hoverAction = hoverEvent?.action?.canonicalName
-        this.hoverValue = hoverEvent?.value?.formattedText
+        if (clickEvent != null) {
+            clickAction = clickEvent.action
+            clickValue = clickEvent.value
+        }
+
+        //#if MC==11604
+        //$$ val hoverEvent = component.style.hoverEvent
+        //#else
+        val hoverEvent = component.chatStyle.chatHoverEvent
+        //#endif
+
+        if (hoverEvent != null) {
+            hoverAction = hoverEvent.action
+
+            //#if MC==11604
+            //$$ hoverValue = hoverEvent.getParameter(hoverAction)
+            //#else
+            hoverValue = hoverEvent.value
+            //#endif
+        }
     }
 
-    /**
-     * @return the text in the component
-     */
-    fun getText(): String = this.text
-
-    /**
-     * Sets the components text string.
-     * @param text the text string in the component.
-     */
-    fun setText(text: String) = apply {
-        this.text = text
+    fun setClick(action: MCClickEventAction, value: String) = apply {
+        clickAction = action
+        clickValue = value
         reInstance()
     }
 
-    /**
-     * @return true if the component is formatted
-     */
-    fun isFormatted(): Boolean = this.formatted
-
-    /**
-     * Sets if the component is to be formatted
-     * @param formatted true if formatted
-     */
-    fun setFormatted(formatted: Boolean) = apply {
-        this.formatted = formatted
+    fun setHover(action: MCHoverEventAction, value: Any) = apply {
+        hoverAction = action
+        hoverValue = value
         reInstance()
     }
 
-    /**
-     * Sets the click action and value of the component.
-     * See [TextComponent.setClickAction] for possible click actions.
-     * @param action the click action
-     * @param value the click value
-     */
-    fun setClick(action: String, value: String) = apply {
-        this.clickAction = action
-        this.clickValue = value
-        reInstanceClick()
+    fun chat() {
+        TODO()
     }
 
-    /**
-     * @return the current click action
-     */
-    fun getClickAction(): String? = this.clickAction
-
-    /**
-     * Sets the action to be performed when the component is clicked on.
-     * Possible actions include:
-     * - open_url
-     * - open_file
-     * - run_command
-     * - suggest_command
-     * - change_page
-     * @param action the click action
-     */
-    fun setClickAction(action: String) = apply {
-        this.clickAction = action
-        reInstanceClick()
+    fun actionBar() {
+        TODO()
     }
-
-    /**
-     * @return the current click value
-     */
-    fun getClickValue(): String? = this.clickValue
-
-    /**
-     * Sets the value to be used by the click action.
-     * See [TextComponent.setClickAction] for possible click actions.
-     * @param value the click value
-     */
-    fun setClickValue(value: String) = apply {
-        this.clickValue = value
-        reInstanceClick()
-    }
-
-    /**
-     * Sets the hover action and value of the component.
-     * See [TextComponent.setHoverValue] for possible hover actions.
-     * @param action the hover action
-     * @param value the hover value
-     */
-    fun setHover(action: String, value: String) = apply {
-        this.hoverAction = action
-        this.hoverValue = value
-        reInstanceHover()
-    }
-
-    /**
-     * @return the current hover action
-     */
-    fun getHoverAction(): String? = this.hoverAction
-
-    /**
-     * Sets the action to be performed when the component is hovered over.
-     * Hover action is set to 'show_text' by default.
-     * Possible actions include:
-     * - show_text
-     * - show_achievement
-     * - show_item
-     * - show_entity
-     * @param action the hover action
-     */
-    fun setHoverAction(action: String) = apply {
-        this.hoverAction = action
-        reInstanceHover()
-    }
-
-    /**
-     * @return the current hover value
-     */
-    fun getHoverValue(): String? = this.hoverValue
-
-    /**
-     * Sets the value to be used by the hover action.
-     * See [TextComponent.setHoverValue] for possible hover actions.
-     * @param value the hover value
-     */
-    fun setHoverValue(value: String) = apply {
-        this.hoverValue = value
-        reInstanceHover()
-    }
-
-    /**
-     * Shows the component in chat as a new [Message]
-     */
-    fun chat() = Message(this).chat()
-
-    /**
-     * Shows the component on the actionbar as a new [Message]
-     */
-    fun actionBar() = Message(this).actionBar()
-
-    override fun toString() =
-        "TextComponent{" +
-                "text:$text, " +
-                "formatted:$formatted, " +
-                "hoverAction:$hoverAction, " +
-                "hoverValue:$hoverValue, " +
-                "clickAction:$clickAction, " +
-                "clickValue:$clickValue, " +
-                "}"
 
     private fun reInstance() {
-        this.chatComponentText = BaseTextComponent(
-            if (this.formatted) ChatLib.addColor(this.text)
-            else this.text
-        )
+        component = MCStringTextComponent(text.formatIf(formatted))
 
         reInstanceClick()
         reInstanceHover()
     }
 
     private fun reInstanceClick() {
-        if (this.clickAction == null || this.clickValue == null) return
+        if (clickAction == null || clickValue == null)
+            return
 
-        this.chatComponentText.getStyling()
-            //#if MC<=10809
-            .chatClickEvent =
-                //#else
-                //$$ .clickEvent =
-                //#endif
-            TextClickEvent(
-                ClickEventAction.getValueByCanonicalName(this.clickAction),
-                if (this.formatted) ChatLib.addColor(this.clickValue)
-                else this.clickValue
-            )
+        val event = ClickEvent(clickAction, clickValue!!.formatIf(formatted))
+
+        //#if MC==11604
+        //$$ component.style.clickEvent = event
+        //#else
+        component.chatStyle.chatClickEvent = event
+        //#endif
     }
 
     private fun reInstanceHover() {
-        if (this.hoverAction == null || this.hoverValue == null) return
+        if (hoverAction == null || hoverValue == null)
+            return
 
-        this.chatComponentText.getStyling()
-            //#if MC<=10809
-            .chatHoverEvent =
-                //#else
-                //$$ .hoverEvent =
-                //#endif
-            TextHoverEvent(
-                HoverEventAction.getValueByCanonicalName(this.hoverAction),
-                BaseTextComponent(
-                    if (this.formatted) ChatLib.addColor(this.hoverValue)
-                    else this.hoverValue
-                )
-            )
+        //#if MC==11604
+        //$$ val action: HoverEvent.Action<MCITextComponent> = hoverAction!! as HoverEvent.Action<MCITextComponent>
+        //$$ val value: MCITextComponent = MCStringTextComponent(hoverValue!! as String)
+        //$$ val event = HoverEvent<MCITextComponent>(action, value)
+        //$$ setHoverEventHelper(event)
+        //#else
+        setHoverEventHelper(HoverEvent(
+            hoverAction,
+            MCStringTextComponent(hoverValue!! as String)
+        ))
+        //#endif
+    }
+
+    private fun setHoverEventHelper(event: HoverEvent) {
+        //#if MC==11604
+        //$$ component.style.hoverEvent = event
+        //#else
+        component.chatStyle.chatHoverEvent = event
+        //#endif
+    }
+
+    private fun String.formatIf(predicate: Boolean) = if (predicate) ChatLib.addColor(this) else this
+
+
+    //#if MC==11604
+    //$$ class StyledStringAcceptor : IStyledTextAcceptor<Any> {
+    //$$     private val builder = FormattedTextBuilder()
+    //$$
+    //$$     override fun accept(style: Style, string: String): Optional<Any> {
+    //$$         builder.accept(style, string)
+    //$$         return Optional.empty()
+    //$$     }
+    //$$
+    //$$     override fun toString() = builder.toString()
+    //$$ }
+    //$$
+    //$$ class StyledCharacterConsumer : ICharacterConsumer {
+    //$$     private val builder = FormattedTextBuilder()
+    //$$
+    //$$     override fun accept(ignored: Int, style: Style, charCode: Int): Boolean {
+    //$$         builder.accept(style, charCode.toChar().toString())
+    //$$         return true
+    //$$     }
+    //$$
+    //$$     override fun toString() = builder.toString()
+    //$$ }
+    //$$
+    //$$ class FormattedTextBuilder {
+    //$$     private val builder = StringBuilder()
+    //$$     private var cachedStyle: Style? = null
+    //$$
+    //$$     fun accept(style: Style, string: String) {
+    //$$         if (style != cachedStyle) {
+    //$$             cachedStyle = style
+    //$$             builder.append(formatString(style))
+    //$$         }
+    //$$
+    //$$         builder.append(string)
+    //$$     }
+    //$$
+    //$$     override fun toString() = builder.toString()
+    //$$
+    //$$     private fun formatString(style: Style): String {
+    //$$         val builder = StringBuilder("§r")
+    //$$
+    //$$         when {
+    //$$             style.bold -> builder.append("§l")
+    //$$             style.italic -> builder.append("§o")
+    //$$             style.underlined -> builder.append("§n")
+    //$$             style.strikethrough -> builder.append("§m")
+    //$$             style.obfuscated -> builder.append("§k")
+    //$$         }
+    //$$
+    //$$         if (style.color != null)
+    //$$             builder.append(style.color.toString())
+    //$$         return builder.toString()
+    //$$     }
+    //$$ }
+    //#endif
+
+    // **********************
+    // * METHOD DELEGATIONS *
+    // **********************
+
+    //#if MC==11604
+    //$$ fun appendSibling(component: ITextComponent) {
+    //$$     siblings.add(component)
+    //$$ }
+    //$$
+    //$$ val unformattedText: String get() = unformattedComponentText
+    //$$
+    //$$ val formattedText: String get() = text
+    //$$
+    //$$ override fun getString(): String = component.string
+    //$$
+    //$$ override fun getStringTruncated(maxLen: Int): String = component.getStringTruncated(maxLen)
+    //$$
+    //$$ override fun <T : Any?> getComponent(acceptor: ITextAcceptor<T>): Optional<T> {
+    //$$     return component.getComponent(acceptor)
+    //$$ }
+    //$$
+    //$$ override fun <T : Any?> getComponentWithStyle(acceptor: IStyledTextAcceptor<T>, styleIn: Style): Optional<T> {
+    //$$     return component.getComponentWithStyle(acceptor, styleIn)
+    //$$ }
+    //$$
+    //$$ override fun <T> func_230534_b_(p_230534_1_: IStyledTextAcceptor<T>, p_230534_2_: Style): Optional<T> {
+    //$$     return component.func_230534_b_(p_230534_1_, p_230534_2_)
+    //$$ }
+    //$$
+    //$$ override fun <T> func_230533_b_(p_230533_1_: ITextAcceptor<T>): Optional<T> {
+    //$$     return component.func_230533_b_(p_230533_1_)
+    //$$ }
+    //$$
+    //$$ override fun getStyle(): Style = component.style
+    //$$
+    //$$ override fun getUnformattedComponentText(): String = component.unformattedComponentText
+    //$$
+    //$$ override fun getSiblings(): MutableList<ITextComponent> = component.siblings
+    //$$
+    //$$ override fun copyRaw(): IFormattableTextComponent = component.copyRaw()
+    //$$
+    //$$ override fun deepCopy(): IFormattableTextComponent = component.deepCopy()
+    //$$
+    //$$ override fun func_241878_f(): IReorderingProcessor = component.func_241878_f()
+    //#else
+    override fun setChatStyle(style: ChatStyle): IChatComponent = component.setChatStyle(style)
+
+    override fun getChatStyle(): ChatStyle = component.chatStyle
+
+    override fun appendText(text: String): IChatComponent = component.appendText(text)
+
+    override fun appendSibling(component: IChatComponent): IChatComponent = component.appendSibling(component)
+
+    override fun getUnformattedTextForChat(): String = component.unformattedTextForChat
+
+    override fun getUnformattedText(): String = component.unformattedText
+
+    override fun getFormattedText(): String = component.formattedText
+
+    override fun getSiblings(): MutableList<IChatComponent> = component.siblings
+
+    override fun createCopy(): IChatComponent = component.createCopy()
+
+    override fun iterator(): MutableIterator<IChatComponent> = component.iterator()
+    //#endif
+
+    companion object {
+        fun from(obj: Any): TextComponent? {
+            return when (obj) {
+                is TextComponent -> obj
+                is String -> TextComponent(obj)
+                is MCITextComponent -> TextComponent(obj)
+                else -> null
+            }
+        }
+
+        fun stripFormatting(string: String): String {
+            //#if MC==11604
+            //$$ return TextFormatting.getTextWithoutFormattingCodes(string)!!
+            //#else
+            return EnumChatFormatting.getTextWithoutFormattingCodes(string)
+            //#endif
+        }
     }
 }

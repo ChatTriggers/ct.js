@@ -11,6 +11,10 @@ import com.chattriggers.ctjs.minecraft.objects.message.TextComponent
 import com.chattriggers.ctjs.print
 import com.chattriggers.ctjs.utils.config.Config
 import com.chattriggers.ctjs.utils.config.GuiConfig
+import com.chattriggers.ctjs.utils.kotlin.MCClickEventAction
+import com.chattriggers.ctjs.utils.kotlin.MCHoverEventAction
+import com.chattriggers.ctjs.utils.kotlin.MCITextComponent
+import com.chattriggers.ctjs.utils.kotlin.MCStringTextComponent
 import java.awt.Desktop
 import java.awt.Toolkit
 import java.awt.datatransfer.StringSelection
@@ -182,10 +186,11 @@ object CTCommand : CommandBase() {
         for (i in 0 until toDump) {
             msg = ChatLib.replaceFormatting(messages[messages.size - toDump + i])
             Message(
-                TextComponent(msg)
-                    .setClick("run_command", "/ct copy $msg")
-                    .setHoverValue(ChatLib.addColor("&eClick here to copy this message."))
-                    .setFormatted(false)
+                TextComponent(msg).apply {
+                    setClick(MCClickEventAction.RUN_COMMAND, "/ct copy $msg")
+                    setHover(MCHoverEventAction.SHOW_TEXT, ChatLib.addColor("&eClick here to copy this message."))
+                    formatted = false
+                }
             ).setFormatted(false).setChatLineId(this.idFixed + i + 1).chat()
         }
         Message("&6&m${ChatLib.getChatBreak()}").setChatLineId(this.idFixed + lines + 1).chat()

@@ -3,6 +3,7 @@ package com.chattriggers.ctjs.launch.plugin
 import com.chattriggers.ctjs.engine.module.ModuleManager
 import dev.falsehonesty.asmhelper.BaseClassTransformer
 import net.minecraft.launchwrapper.LaunchClassLoader
+import kotlin.streams.toList
 
 class CTJSTransformer : BaseClassTransformer() {
     private var transforming = false
@@ -21,6 +22,11 @@ class CTJSTransformer : BaseClassTransformer() {
         classLoader.addTransformerExclusion("org.fife.")
     }
 
+    init {
+        val s = "str"
+        s.toCharArray().reversed()
+    }
+
     override fun makeTransformers() {
         if (transforming) return
         transforming = true
@@ -36,6 +42,11 @@ class CTJSTransformer : BaseClassTransformer() {
             injectPacketThreadUtil()
             makeGuiScreenInjections()
             injectEffectRenderer()
+
+            //#if MC==11604
+            //$$ setupNewChatGuiAccessor()
+            //$$ setupCommandDispatcherAccessor()
+            //#endif
 
             ModuleManager.setup()
             ModuleManager.asmPass()

@@ -4,19 +4,20 @@ import com.chattriggers.ctjs.minecraft.libs.ChatLib
 import com.chattriggers.ctjs.minecraft.wrappers.Client
 import com.chattriggers.ctjs.minecraft.wrappers.Player
 import com.chattriggers.ctjs.minecraft.wrappers.objects.inventory.Item
-import com.chattriggers.ctjs.utils.kotlin.BaseTextComponent
-import com.chattriggers.ctjs.utils.kotlin.ChatPacket
 import com.chattriggers.ctjs.utils.kotlin.External
-import com.chattriggers.ctjs.utils.kotlin.ITextComponent
+import com.chattriggers.ctjs.utils.kotlin.MCChatPacket
+import com.chattriggers.ctjs.utils.kotlin.MCITextComponent
+import com.chattriggers.ctjs.utils.kotlin.MCStringTextComponent
 import net.minecraftforge.client.event.ClientChatReceivedEvent
 
-//#if MC>=11202
+//#if MC==11604
 //$$ import net.minecraft.util.text.ChatType
+//$$ import net.minecraft.util.IReorderingProcessor
 //#endif
 
 @External
 class Message {
-    private lateinit var chatMessage: ITextComponent
+    private lateinit var chatMessage: MCITextComponent
 
     private var messageParts = mutableListOf<TextComponent>()
     private var chatLineId = -1
@@ -33,7 +34,7 @@ class Message {
      * Creates a new Message object from an IChatComponent.
      * @param component the IChatComponent
      */
-    constructor(component: ITextComponent) {
+    constructor(component: MCITextComponent) {
         if (component.siblings.isEmpty()) {
             this.messageParts.add(TextComponent(component))
         } else {
@@ -62,10 +63,29 @@ class Message {
      */
     constructor(vararg components: Any) : this(ArrayList(components.asList()))
 
+    //#if MC==11604
+    //$$ internal constructor(processor: IReorderingProcessor) {
+    //$$     val consumer = TextComponent.StyledCharacterConsumer()
+    //$$     processor.accept(consumer)
+    //$$     messageParts.add(TextComponent(consumer.toString()))
+    //$$ }
+    //$$
+    //$$ fun getReorderingProcessor() = IReorderingProcessor { consumer ->
+    //$$     // TODO: This almost certainly does not work
+    //$$     var index = 0
+    //$$     for (part in getMessageParts()) {
+    //$$         part.unformattedText.forEach {
+    //$$             consumer.accept(index++, part.style, it.toInt())
+    //$$         }
+    //$$     }
+    //$$     true
+    //$$ }
+    //#endif
+
     /**
-     * @return the parsed message as an ITextComponent
+     * @return the parsed message as an _root_ide_package_.com.chattriggers.ctjs.utils.kotlin.MCITextComponent
      */
-    fun getChatMessage(): ITextComponent {
+    fun getChatMessage(): MCITextComponent {
         parseMessage()
         return this.chatMessage
     }
@@ -186,13 +206,13 @@ class Message {
 
         //#if MC<=10809
         if (this.recursive) {
-            Client.getConnection().handleChat(ChatPacket(this.chatMessage, 0))
+            Client.getConnection().handleChat(MCChatPacket(this.chatMessage, 0))
         } else {
             Player.getPlayer()?.addChatMessage(this.chatMessage)
         }
         //#else
         //$$ if (this.recursive) {
-        //$$    Client.getConnection().handleChat(ChatPacket(this.chatMessage, ChatType.CHAT))
+        //$$    Client.getConnection().handleChat(MCChatPacket(this.chatMessage, ChatType.CHAT))
         //$$ } else {
         //$$    Player.getPlayer()?.sendMessage(this.chatMessage)
         //$$ }
@@ -207,7 +227,7 @@ class Message {
         if (!ChatLib.isPlayer("[ACTION BAR]: " + this.chatMessage.formattedText)) return
 
         Client.getConnection().handleChat(
-            ChatPacket(
+            MCChatPacket(
                 this.chatMessage,
                 //#if MC<=10809
                 2
@@ -227,10 +247,10 @@ class Message {
                 "}"
 
     private fun parseMessage() {
-        this.chatMessage = BaseTextComponent("")
+        this.chatMessage = MCStringTextComponent("")
 
         this.messageParts.map {
-            this.chatMessage.appendSibling(it.chatComponentText)
+            this.chatMessage.appendSibling(it.component)
         }
     }
 }
