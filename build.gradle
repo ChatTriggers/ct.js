@@ -1,9 +1,11 @@
+import org.jetbrains.dokka.gradle.DokkaTask
+
 buildscript {
     def f = file("gradle/mcversion.txt")
 
     project.ext.mcVersion = f.exists() ? f.readLines().first() as int : 10809
     ext.kotlin_version = "1.3.70"
-    ext.dokka_version = "0.10.1"
+    ext.dokka_version = "1.4.30"
     ext.json_docs_version = "2.0.8"
 
     repositories {
@@ -21,18 +23,21 @@ buildscript {
         maven {
             url "https://plugins.gradle.org/m2/"
         }
+        maven {
+            url "https://jitpack.io"
+        }
         flatDir dirs: 'libs'
     }
 
     dependencies {
-        classpath "net.minecraftforge.gradle:ForgeGradle:" + (
-            mcVersion >= 11200 ? '2.3-SNAPSHOT' :
-                mcVersion >= 10904 ? '2.2-SNAPSHOT' :
-                    mcVersion >= 10809 ? "2.1-SNAPSHOT" :
-                        "invalid"
-        )
+        classpath "com.github.ReplayMod:ForgeGradle:" + (
+                mcVersion >= 11200 ? '2817481' :
+                mcVersion >= 10904 ? '5bb7a53' :
+                mcVersion >= 10809 ? 'dcfe5a5' :
+                                     "invalid"
+        ) + ":all"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-        classpath "org.jetbrains.dokka:dokka-gradle-plugin:0.10.1"
+        classpath "org.jetbrains.dokka:dokka-gradle-plugin:$dokka_version"
         classpath ':proguard:'
     }
 }
@@ -150,21 +155,34 @@ processResources {
     rename '(.+_at.cfg)', 'META-INF/$1'
 }
 
-task userdocs(type: org.jetbrains.dokka.gradle.DokkaTask) {
-    description = "Generate the docs to be used by scripters, excludes internal classes"
-    group = "documentation"
+task userdocs(type: DokkaTask) {
+    dependencies {
+        userdocsPlugin("org.jetbrains.dokka:javadoc-plugin:$dokka_version")
+    }
 
-    outputFormat = "javadoc"
-    outputDirectory = "$buildDir/javadoc"
+    outputDirectory = file("$buildDir/javadoc")
+}
 
+task dokkaUserdocs(type: DokkaTask) {
+    outputDirectory = file("$buildDir/dokkaJavadoc")
+}
 
-    configuration {
-        jdkVersion = 8
+tasks.withType(DokkaTask).configureEach {
+    dokkaSourceSets {
+        named("main") {
+            for (def pkg : ["engine.langs", "engine.loader", "engine.module", "utils", "listeners", "loader", "launch", "commands", "minecraft.wrappers.objects.threading"]) {
+                perPackageOption {
+                    matchingRegex.set("${"com.chattriggers.ctjs.$pkg".replace(".", "\\.")}(\$|\\.).*")
+                    suppress.set(true)
+                }
+            }
 
-        for (def pkg : ["engine.langs", "engine.loader", "engine.module", "utils", "listeners", "loader", "launch", "commands", "minecraft.wrappers.objects.threading"]) {
-            perPackageOption {
-                prefix = "com.chattriggers.ctjs.$pkg"
-                suppress = true
+            sourceLink {
+                localDirectory.set(file("src/main/kotlin"))
+
+                remoteUrl.set(new URL(
+                        "https://github.com/ChatTriggers/ChatTriggers/blob/master/src/main/kotlin"))
+                remoteLineSuffix.set("#L")
             }
         }
     }
