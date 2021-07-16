@@ -1,3 +1,6 @@
+import org.jetbrains.dokka.gradle.DokkaTask
+import proguard.gradle.ProGuardTask
+
 buildscript {
     def f = file("gradle/mcversion.txt")
 
@@ -7,21 +10,20 @@ buildscript {
     ext.json_docs_version = "2.0.8"
 
     repositories {
-        jcenter()
-        mavenLocal()
         mavenCentral()
+        gradlePluginPortal()
         maven {
             name = "forge"
-            url = "https://files.minecraftforge.net/maven"
+            url = "https://maven.minecraftforge.net/"
         }
         maven {
             name = "sponge"
             url = "https://repo.spongepowered.org/repository/maven-public/"
         }
         maven {
-            url "https://plugins.gradle.org/m2/"
+            name = "jitpack"
+            url = "https://jitpack.io"
         }
-        maven { url 'https://jitpack.io' }
         flatDir dirs: 'libs'
     }
 
@@ -94,10 +96,9 @@ afterEvaluate {
 
 repositories {
     mavenCentral()
-    jcenter()
     maven {
         name = 'sponge'
-        url = 'https://repo.spongepowered.org/maven'
+        url = 'https://repo.spongepowered.org/repository/maven-public/'
     }
     maven {
         url = 'https://jitpack.io'
@@ -108,14 +109,17 @@ repositories {
 }
 
 dependencies {
-    provided "com.fasterxml.jackson.core:jackson-core:2.9.3"
+    provided "gg.essential:loader-launchwrapper:1.0.2"
+    implementation "gg.essential:Essential:1193-10809-SNAPSHOT"
+
+    provided 'com.fasterxml.jackson.core:jackson-core:2.12.4'
     provided "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
     provided "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
     provided "dev.falsehonesty.asmhelper:AsmHelper:1.4-$mcVersion"
     provided 'com.chattriggers:rhino:1.8.2'
-    provided 'com.fifesoft:rsyntaxtextarea:3.0.8'
+    provided 'com.fifesoft:rsyntaxtextarea:3.1.3'
     provided 'com.github.falsehonesty:ts-generator:adfb57a8f6'
-    provided 'org.kohsuke:github-api:1.130'
+    provided 'org.kohsuke:github-api:1.131'
 }
 
 jar {
@@ -134,6 +138,7 @@ jar {
     manifest.attributes(
         "FMLCorePlugin": "com.chattriggers.ctjs.launch.plugin.CTJSLoadingPlugin",
         "FMLCorePluginContainsFMLMod": "true",
+        "TweakClass": "gg.essential.loader.stage0.EssentialSetupTweaker",
         "FMLAT": "ctjs_at.cfg"
     )
 }
@@ -157,7 +162,7 @@ processResources {
     rename '(.+_at.cfg)', 'META-INF/$1'
 }
 
-task userdocs(type: org.jetbrains.dokka.gradle.DokkaTask) {
+task userdocs(type: DokkaTask) {
     description = "Generate the docs to be used by scripters, excludes internal classes"
     group = "documentation"
 
@@ -205,7 +210,7 @@ task changeMcVersion() {
 }
 
 
-task proguard(type: proguard.gradle.ProGuardTask) {
+task proguard(type: ProGuardTask) {
     configuration 'configuration.pro'
 
     // dontobfuscate()
