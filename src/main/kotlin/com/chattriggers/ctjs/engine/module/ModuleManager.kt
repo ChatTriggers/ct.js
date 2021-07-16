@@ -3,8 +3,7 @@ package com.chattriggers.ctjs.engine.module
 import com.chattriggers.ctjs.CTJS
 import com.chattriggers.ctjs.Reference
 import com.chattriggers.ctjs.engine.langs.js.JSLoader
-import com.chattriggers.ctjs.engine.loader.ModuleUpdater
-import com.chattriggers.ctjs.engine.loader.ILoader
+import com.chattriggers.ctjs.engine.ILoader
 import com.chattriggers.ctjs.launch.IndySupport
 import com.chattriggers.ctjs.minecraft.libs.FileLib
 import com.chattriggers.ctjs.printTraceToConsole

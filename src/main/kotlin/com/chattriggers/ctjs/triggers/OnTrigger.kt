@@ -1,7 +1,7 @@
 package com.chattriggers.ctjs.triggers
 
 import com.chattriggers.ctjs.Reference
-import com.chattriggers.ctjs.engine.loader.ILoader
+import com.chattriggers.ctjs.engine.ILoader
 import com.chattriggers.ctjs.utils.kotlin.External
 
 @External

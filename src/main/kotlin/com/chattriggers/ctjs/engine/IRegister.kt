@@ -1,9 +1,5 @@
 package com.chattriggers.ctjs.engine
 
-import com.chattriggers.ctjs.engine.langs.js.JSLoader
-import com.chattriggers.ctjs.engine.loader.ILoader
-import com.chattriggers.ctjs.engine.module.Module
-import com.chattriggers.ctjs.launch.plugin.CTJSTransformer
 import com.chattriggers.ctjs.minecraft.listeners.ClientListener
 import com.chattriggers.ctjs.minecraft.wrappers.objects.inventory.Item
 import com.chattriggers.ctjs.triggers.*

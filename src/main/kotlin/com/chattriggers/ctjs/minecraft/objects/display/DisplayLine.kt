@@ -1,6 +1,6 @@
 package com.chattriggers.ctjs.minecraft.objects.display
 
-import com.chattriggers.ctjs.engine.loader.ILoader
+import com.chattriggers.ctjs.engine.ILoader
 import com.chattriggers.ctjs.minecraft.libs.renderer.Renderer
 import com.chattriggers.ctjs.minecraft.libs.renderer.Text
 import com.chattriggers.ctjs.minecraft.wrappers.Client

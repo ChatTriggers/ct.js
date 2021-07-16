@@ -1,9 +1,9 @@
-package com.chattriggers.ctjs.engine.loader
+package com.chattriggers.ctjs.engine.module
 
 import com.chattriggers.ctjs.CTJS
-import com.chattriggers.ctjs.engine.module.Module
-import com.chattriggers.ctjs.engine.module.ModuleManager
-import com.chattriggers.ctjs.engine.module.ModuleMetadata
+import com.chattriggers.ctjs.engine.module.sources.CTModuleSource
+import com.chattriggers.ctjs.engine.module.sources.GitHubModuleSource
+import com.chattriggers.ctjs.engine.module.sources.ModuleSource
 import com.chattriggers.ctjs.minecraft.libs.ChatLib
 import com.chattriggers.ctjs.printToConsole
 import com.chattriggers.ctjs.utils.config.Config
@@ -11,10 +11,10 @@ import java.io.File
 
 object ModuleUpdater {
     // CTRepositoryHandler must be last in this list
-    private val repositoryHandlers = listOf(GitHubRepositoryHandler, CTRepositoryHandler)
+    private val repositoryHandlers = listOf(GitHubModuleSource, CTModuleSource)
 
-    private fun repositoryForModule(module: Module): RepositoryHandler {
-        return module.metadata.repository?.handler() ?: return CTRepositoryHandler
+    private fun repositoryForModule(module: Module): ModuleSource {
+        return module.metadata.repository?.handler() ?: return CTModuleSource
     }
 
     fun importPending() {
@@ -73,6 +73,6 @@ object ModuleUpdater {
         // Try to import any dependencies
         module.metadata.requires?.forEach { import(it) }
 
-        return listOf(module) + (module.metadata.requires?.map(::import)?.flatten() ?: emptyList())
+        return listOf(module) + (module.metadata.requires?.map(ModuleUpdater::import)?.flatten() ?: emptyList())
     }
 }

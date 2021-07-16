@@ -1,4 +1,4 @@
-package com.chattriggers.ctjs.engine.loader
+package com.chattriggers.ctjs.engine.module.sources
 
 import com.chattriggers.ctjs.CTJS
 import com.chattriggers.ctjs.engine.module.*
@@ -8,13 +8,12 @@ import com.chattriggers.ctjs.printToConsole
 import com.chattriggers.ctjs.utils.kotlin.fromJson
 import org.kohsuke.github.GHRelease
 import org.kohsuke.github.GitHub
-import org.kohsuke.github.GitHubBuilder
 import java.io.File
 import java.net.MalformedURLException
 import java.net.URL
 import java.nio.file.*
 
-object GitHubRepositoryHandler : RepositoryHandler {
+object GitHubModuleSource : ModuleSource {
     private val github = GitHub.connectAnonymously()
     private val releaseCache = mutableMapOf<GitHubRepositoryInfo, GHRelease>()
 
@@ -69,7 +68,7 @@ object GitHubRepositoryHandler : RepositoryHandler {
             val connection = URL(release.zipballUrl).openConnection()
             connection.setRequestProperty("User-Agent", "Mozilla/5.0")
 
-            val moduleFolder = RepositoryHandler.importModuleZip(connection.getInputStream()).let { moduleFolder ->
+            val moduleFolder = ModuleSource.importModuleZip(connection.getInputStream()).let { moduleFolder ->
                 // The folder name will be the name of the zip, which is formatted as "username-reponame-sha1"
                 File(moduleFolder.parentFile, repo).also {
                     Files.move(moduleFolder.toPath(), it.toPath())

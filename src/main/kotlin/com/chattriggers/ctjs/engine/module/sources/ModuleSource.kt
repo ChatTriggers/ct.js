@@ -1,4 +1,4 @@
-package com.chattriggers.ctjs.engine.loader
+package com.chattriggers.ctjs.engine.module.sources
 
 import com.chattriggers.ctjs.engine.module.*
 import org.apache.commons.io.FileUtils
@@ -9,14 +9,16 @@ import java.nio.file.Files
 import java.nio.file.Paths
 import java.nio.file.StandardCopyOption
 
-interface RepositoryHandler {
+interface ModuleSource {
     fun matches(identifier: String): Boolean
+
     fun shouldUpdate(module: Module): Boolean
 
     /**
      * @return the real name of the module, i.e. the folder name in the modules folder
      */
     fun import(identifier: String): String?
+
     fun update(module: Module)
 
     companion object {

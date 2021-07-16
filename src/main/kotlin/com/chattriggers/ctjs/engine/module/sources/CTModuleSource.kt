@@ -1,4 +1,4 @@
-package com.chattriggers.ctjs.engine.loader
+package com.chattriggers.ctjs.engine.module.sources
 
 import com.chattriggers.ctjs.CTJS
 import com.chattriggers.ctjs.Reference
@@ -10,7 +10,7 @@ import com.chattriggers.ctjs.utils.kotlin.toVersion
 import java.io.File
 import java.net.URL
 
-object CTRepositoryHandler : RepositoryHandler {
+object CTModuleSource : ModuleSource {
     override fun matches(identifier: String): Boolean {
         return true
     }
@@ -53,7 +53,7 @@ object CTRepositoryHandler : RepositoryHandler {
             val connection = URL(url).openConnection()
             connection.setRequestProperty("User-Agent", "Mozilla/5.0")
 
-            val moduleFolder = RepositoryHandler.importModuleZip(connection.getInputStream())
+            val moduleFolder = ModuleSource.importModuleZip(connection.getInputStream())
             val metadataFile = File(moduleFolder, ModuleManager.METADATA_FILE_NAME)
 
             val metadata = CTJS.gson.fromJson<ModuleMetadata>(metadataFile.readText())

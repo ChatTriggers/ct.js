@@ -1,6 +1,6 @@
 package com.chattriggers.ctjs.triggers
 
-import com.chattriggers.ctjs.engine.loader.ILoader
+import com.chattriggers.ctjs.engine.ILoader
 import com.chattriggers.ctjs.minecraft.wrappers.Client
 import com.chattriggers.ctjs.utils.kotlin.External
 

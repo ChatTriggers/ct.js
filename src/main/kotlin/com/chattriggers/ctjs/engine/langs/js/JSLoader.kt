@@ -1,6 +1,6 @@
 package com.chattriggers.ctjs.engine.langs.js
 
-import com.chattriggers.ctjs.engine.loader.ILoader
+import com.chattriggers.ctjs.engine.ILoader
 import com.chattriggers.ctjs.engine.langs.Lang
 import com.chattriggers.ctjs.engine.module.Module
 import com.chattriggers.ctjs.engine.module.ModuleManager.modulesFolder

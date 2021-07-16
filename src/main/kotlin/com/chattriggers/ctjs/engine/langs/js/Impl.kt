@@ -1,7 +1,7 @@
 package com.chattriggers.ctjs.engine.langs.js
 
 import com.chattriggers.ctjs.engine.IRegister
-import com.chattriggers.ctjs.engine.loader.ILoader
+import com.chattriggers.ctjs.engine.ILoader
 import com.chattriggers.ctjs.minecraft.objects.display.Display
 import com.chattriggers.ctjs.minecraft.objects.display.DisplayLine
 import com.chattriggers.ctjs.minecraft.objects.gui.Gui
