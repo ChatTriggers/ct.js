@@ -8,7 +8,7 @@ import com.chattriggers.ctjs.launch.IndySupport
 import com.chattriggers.ctjs.minecraft.libs.FileLib
 import com.chattriggers.ctjs.printTraceToConsole
 import com.chattriggers.ctjs.triggers.TriggerType
-import com.chattriggers.ctjs.utils.config.Config
+import com.chattriggers.ctjs.utils.Config
 import com.chattriggers.ctjs.utils.console.Console
 import org.apache.commons.io.FileUtils
 import java.io.File

@@ -1,6 +1,6 @@
 package com.chattriggers.ctjs.minecraft.libs
 
-import com.chattriggers.ctjs.utils.config.Config
+import com.chattriggers.ctjs.utils.Config
 import com.chattriggers.ctjs.utils.kotlin.External
 import java.io.*
 import java.net.URL

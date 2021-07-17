@@ -4,7 +4,7 @@ import com.chattriggers.ctjs.minecraft.libs.ChatLib
 import com.chattriggers.ctjs.minecraft.libs.EventLib
 import com.chattriggers.ctjs.printToConsole
 import com.chattriggers.ctjs.triggers.TriggerType
-import com.chattriggers.ctjs.utils.config.Config
+import com.chattriggers.ctjs.utils.Config
 import net.minecraftforge.client.event.ClientChatReceivedEvent
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 

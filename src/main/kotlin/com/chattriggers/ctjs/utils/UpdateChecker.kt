@@ -9,9 +9,7 @@ import com.chattriggers.ctjs.minecraft.objects.message.Message
 import com.chattriggers.ctjs.minecraft.objects.message.TextComponent
 import com.chattriggers.ctjs.minecraft.wrappers.World
 import com.chattriggers.ctjs.printTraceToConsole
-import com.chattriggers.ctjs.utils.config.Config
 import com.chattriggers.ctjs.utils.kotlin.toVersion
-import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import net.minecraft.client.renderer.GlStateManager
 import net.minecraftforge.client.event.RenderGameOverlayEvent

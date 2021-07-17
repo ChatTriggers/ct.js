@@ -10,7 +10,7 @@ import com.chattriggers.ctjs.minecraft.objects.message.Message
 import com.chattriggers.ctjs.minecraft.wrappers.Client
 import com.chattriggers.ctjs.minecraft.wrappers.World
 import com.chattriggers.ctjs.triggers.TriggerType
-import com.chattriggers.ctjs.utils.config.Config
+import com.chattriggers.ctjs.utils.Config
 import com.chattriggers.ctjs.utils.console.Console
 import com.chattriggers.ctjs.utils.kotlin.External
 import com.chattriggers.ctjs.utils.kotlin.times
@@ -60,7 +60,6 @@ object Reference {
 
         ChatLib.chat("&cReloading ct.js scripts...")
 
-        CTJS.loadConfig()
         printLoadCompletionStatus(0f)
 
         conditionalThread {

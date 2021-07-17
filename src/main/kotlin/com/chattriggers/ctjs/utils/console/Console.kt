@@ -2,7 +2,7 @@ package com.chattriggers.ctjs.utils.console
 
 import com.chattriggers.ctjs.Reference
 import com.chattriggers.ctjs.engine.ILoader
-import com.chattriggers.ctjs.utils.config.Config
+import com.chattriggers.ctjs.utils.Config
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea
 import org.fife.ui.rsyntaxtextarea.SyntaxConstants
 import org.fife.ui.rsyntaxtextarea.Theme
@@ -238,7 +238,7 @@ class Console(val loader: ILoader?) {
         this.frame.toFront()
         this.frame.repaint()
 
-        val chosenFont = if (Config.consolePrettyFont) FIRA_FONT.deriveFont(Config.consoleFontSize.toFloat()) else Font("DejaVu Sans Mono", Font.PLAIN, 15).deriveFont(Config.consoleFontSize.toFloat())
+        val chosenFont = if (Config.consoleFiraCodeFont) FIRA_FONT.deriveFont(Config.consoleFontSize.toFloat()) else Font("DejaVu Sans Mono", Font.PLAIN, 15).deriveFont(Config.consoleFontSize.toFloat())
 
         textArea.font = chosenFont
         // TODO: Ligatures make everything extremely slow for some reason. Is this fixable?

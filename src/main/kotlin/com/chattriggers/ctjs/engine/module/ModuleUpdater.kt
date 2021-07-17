@@ -6,7 +6,7 @@ import com.chattriggers.ctjs.engine.module.sources.GitHubModuleSource
 import com.chattriggers.ctjs.engine.module.sources.ModuleSource
 import com.chattriggers.ctjs.minecraft.libs.ChatLib
 import com.chattriggers.ctjs.printToConsole
-import com.chattriggers.ctjs.utils.config.Config
+import com.chattriggers.ctjs.utils.Config
 import java.io.File
 
 object ModuleUpdater {
