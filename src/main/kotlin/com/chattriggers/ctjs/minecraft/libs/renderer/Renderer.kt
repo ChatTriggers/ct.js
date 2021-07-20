@@ -8,6 +8,7 @@ import com.chattriggers.ctjs.minecraft.wrappers.objects.PlayerMP
 import com.chattriggers.ctjs.utils.kotlin.External
 import com.chattriggers.ctjs.utils.kotlin.MCTessellator
 import com.chattriggers.ctjs.utils.kotlin.getRenderer
+import net.minecraft.client.entity.AbstractClientPlayer
 import net.minecraft.client.gui.FontRenderer
 import net.minecraft.client.gui.ScaledResolution
 import net.minecraft.client.renderer.GlStateManager
@@ -361,9 +362,23 @@ object Renderer {
         finishDraw()
     }
 
+    private val renderManager = Client.getMinecraft().renderManager
+    private val slimCTRenderPlayer = CTRenderPlayer(renderManager, true)
+    private val normalCTRenderPlayer = CTRenderPlayer(renderManager, false)
+
     @JvmStatic
     @JvmOverloads
-    fun drawPlayer(player: Any, x: Int, y: Int, rotate: Boolean = false) {
+    fun drawPlayer(
+            player: Any,
+            x: Int,
+            y: Int,
+            rotate: Boolean = false,
+            showNametag: Boolean = false,
+            showArmor: Boolean = true,
+            showCape: Boolean = true,
+            showHeldItem: Boolean = true,
+            showArrows: Boolean = true
+    ) {
         val mouseX = -30f
         val mouseY = 0f
 
@@ -385,6 +400,7 @@ object Renderer {
         GlStateManager.rotate(45.0f, 0.0f, 1.0f, 0.0f)
         GlStateManager.rotate(-45.0f, 0.0f, 1.0f, 0.0f)
         GlStateManager.rotate(-atan((mouseY / 40.0f).toDouble()).toFloat() * 20.0f, 1.0f, 0.0f, 0.0f)
+        GlStateManager.scale(-1f, 1f, 1f)
         if (!rotate) {
             ent.renderYawOffset = atan((mouseX / 40.0f).toDouble()).toFloat() * 20.0f
             ent.rotationYaw = atan((mouseX / 40.0f).toDouble()).toFloat() * 40.0f
@@ -398,7 +414,11 @@ object Renderer {
         renderManager.setPlayerViewY(180.0f)
         renderManager.isRenderShadow = false
         //#if MC<=10809
-        renderManager.renderEntityWithPosYaw(ent, 0.0, 0.0, 0.0, 0.0f, 1.0f)
+        val isSmall = (ent as AbstractClientPlayer).skinType == "slim"
+        val ctRenderPlayer = if (isSmall) slimCTRenderPlayer else normalCTRenderPlayer
+
+        ctRenderPlayer.setOptions(showNametag, showArmor, showCape, showHeldItem, showArrows)
+        ctRenderPlayer.doRender(ent, 0.0, 0.0, 0.0, 0.0f, 1.0f)
         //#else
         //$$ renderManager.doRenderEntity(ent, 0.0, 0.0, 0.0, 0.0F, 1.0F, false)
         //#endif
